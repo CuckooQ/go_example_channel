@@ -5,22 +5,22 @@ import (
 	"time"
 )
 
-func main () {
-	channel := make(chan bool)
-	people := [2]string{"cuckoo", "q"}
-	
-	// go routine operation x 2
-	for _, person := range people {
-		go isSexy(person, channel)	
-	}
-	
-	// 2 channel results
-	fmt.Println(<- channel)
-	fmt.Println(<- channel)
+func isSexy(person string, channel chan string) {
+	time.Sleep(time.Second * 1)
+	channel <- person + " is sexy"
 }
 
-func isSexy(person string, channel chan bool) {
-	fmt.Println(person)
-	time.Sleep(time.Second * 5)
-	channel <- true
+func main() {
+	channel := make(chan string)
+	people := [3]string{"cuckoo", "q", "midory"}
+
+	// go routine operation x 2
+	for _, person := range people {
+		go isSexy(person, channel)
+	}
+
+	// 2 channel results
+	for i := 0; i < len(people); i++ {
+		fmt.Println(<-channel)
+	}
 }
